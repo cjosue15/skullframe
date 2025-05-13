@@ -20,6 +20,7 @@ import {
 } from '@/components/Dialog';
 import { Input } from '@/components/Input';
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface CategoryDialogProps extends PropsWithChildren {
   category?: Category;
@@ -76,10 +77,12 @@ export const CategoryDialog = ({ category, children }: CategoryDialogProps) => {
       revalidate('/admin/categories');
       reset();
       setIsOpen(false);
+      toast.success(
+        `Categoría ${category ? 'actualizada' : 'creada'} correctamente`
+      );
     } catch (error) {
-      console.error(
-        `Error ${category ? 'updating' : 'creating'} category`,
-        error
+      toast.error(
+        `Error ${category ? 'actualizando' : 'creando'} la categoría`
       );
     } finally {
       setIsLoading(false);

@@ -1,4 +1,5 @@
 'use client';
+import { Toaster } from 'sonner';
 
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
@@ -23,6 +24,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Toolbar handleToggleSidebar={toggleSidebar} />
 
         <div className='p-6'>{children}</div>
+
+        <Toaster />
       </main>
     </div>
   );

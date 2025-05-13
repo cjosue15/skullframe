@@ -13,6 +13,7 @@ import {
 } from '@/components/Dialog';
 import { RiDeleteBinLine } from '@remixicon/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 export const CategoryDelete = ({ id }: { id: number }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,11 +33,11 @@ export const CategoryDelete = ({ id }: { id: number }) => {
         throw new Error('Error deleting category');
       }
 
-      const data = await response.json();
+      await response.json();
       revalidate('/admin/categories');
-      console.log('Category deleted successfully:', data);
+      toast.success('Categoría eliminada correctamente');
     } catch (error) {
-      console.error('Error deleting category:', error);
+      toast.error('Error al eliminar la categoría');
     } finally {
       setIsLoading(false);
     }
