@@ -1,13 +1,13 @@
 import { relations } from 'drizzle-orm';
-import { categories, products } from './schema';
+import { categoriesTable, productsTable } from './schema';
 
-export const categoryRelations = relations(categories, ({ many }) => ({
-  products: many(products),
+export const categoryRelations = relations(categoriesTable, ({ many }) => ({
+  products: many(productsTable),
 }));
 
-export const productRelations = relations(products, ({ one }) => ({
-  category: one(categories, {
-    fields: [products.categoryId],
-    references: [categories.id],
+export const productRelations = relations(productsTable, ({ one }) => ({
+  category: one(categoriesTable, {
+    fields: [productsTable.categoryId],
+    references: [categoriesTable.id],
   }),
 }));
