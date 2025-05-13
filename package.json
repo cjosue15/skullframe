@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fontsource/bungee-spice": "^5.2.7",
+    "@hookform/resolvers": "^5.0.1",
     "@libsql/client": "^0.15.5",
     "@radix-ui/react-dialog": "^1.1.13",
     "@radix-ui/react-label": "^2.1.6",
