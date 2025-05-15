@@ -8,7 +8,7 @@ export const categoriesTable = sqliteTable('categories', {
 export const productsTable = sqliteTable('products', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   title: text('title').notNull(),
-  description: text('description'),
+  description: text('description').notNull(),
   price: real('price').notNull(),
   imageUrl: text('image_url').notNull(),
   categoryId: integer('category_id')
