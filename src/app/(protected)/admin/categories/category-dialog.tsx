@@ -110,7 +110,7 @@ export const CategoryDialog = ({ category, children }: CategoryDialogProps) => {
               />
 
               {errors.name && (
-                <p className='text-red-500 text-sm mt-2'>
+                <p className='text-red-600 text-sm mt-2'>
                   {errors.name.message}
                 </p>
               )}
