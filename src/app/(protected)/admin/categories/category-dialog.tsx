@@ -75,6 +75,8 @@ export const CategoryDialog = ({ category, children }: CategoryDialogProps) => {
 
       await response.json();
       revalidate('/admin/categories');
+      revalidate('/admin/products');
+      revalidate('/admin/products/add');
       reset();
       setIsOpen(false);
       toast.success(

@@ -1,6 +1,7 @@
 'use client';
 
 import { FormError } from '@/app/components/FormError';
+import { Category } from '@/app/dtos/categories.dtos';
 import { ProductSchema, productSchema } from '@/app/dtos/products.dtos';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -25,7 +26,7 @@ import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-export function FormProduct() {
+export function FormProduct({ categories }: { categories: Category[] }) {
   const {
     register,
     handleSubmit,
@@ -127,10 +128,17 @@ export function FormProduct() {
                 <SelectValue placeholder='Seleccione una categoría' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='1'>Electronics</SelectItem>
-                <SelectItem value='2'>Clothing</SelectItem>
-                <SelectItem value='3'>Home & Kitchen</SelectItem>
-                <SelectItem value='4'>Books</SelectItem>
+                {categories.length > 0 ? (
+                  categories.map((category) => (
+                    <SelectItem key={category.id} value={String(category.id)}>
+                      {category.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value=''>
+                    No hay categorías disponibles
+                  </SelectItem>
+                )}
               </SelectContent>
             </Select>
 

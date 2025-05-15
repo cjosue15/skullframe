@@ -35,6 +35,8 @@ export const CategoryDelete = ({ id }: { id: number }) => {
 
       await response.json();
       revalidate('/admin/categories');
+      revalidate('/admin/products');
+      revalidate('/admin/products/add');
       toast.success('Categoría eliminada correctamente');
     } catch (error) {
       toast.error('Error al eliminar la categoría');
