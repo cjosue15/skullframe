@@ -42,13 +42,13 @@ export const productSchema = z.object({
 });
 
 export type ProductSchema = z.infer<typeof productSchema>;
-// export interface Product {
-//   id: number;
-//   title: string;
-//   description?: string;
-//   price: number;
-//   imageUrl: string;
-//   categoryId: number;
-//   type: 'physical' | 'digital';
-//   fileUrl?: string; // solo si es digital
-// }
+export interface Product {
+  id?: number;
+  title: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  categoryId: number;
+  type: 'physical' | 'digital';
+  fileUrl?: string;
+}

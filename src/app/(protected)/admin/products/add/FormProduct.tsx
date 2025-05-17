@@ -19,12 +19,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   RiArrowLeftLongLine,
   RiImageLine,
+  RiLoader2Line,
   RiUploadCloudFill,
 } from '@remixicon/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { createProduct, getSignedURL } from '../actions';
+import { toast } from 'sonner';
 
 export function FormProduct({ categories }: { categories: Category[] }) {
   const {
@@ -45,6 +48,7 @@ export function FormProduct({ categories }: { categories: Category[] }) {
     },
   });
 
+  const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -76,20 +80,53 @@ export function FormProduct({ categories }: { categories: Category[] }) {
     setValue('type', checked ? 'digital' : 'physical');
   };
 
-  const onSubmit = (values: ProductSchema) => {
-    console.log('Form submitted:', values);
-    // Here you would typically send the data to your backend
-    // console.log({
-    //   title,
-    //   description,
-    //   category,
-    //   image: fileInputRef.current?.files?.[0],
-    // });
+  const handleFileR2 = async (file: File) => {
+    const signedURL = await getSignedURL({
+      fileType: file.type,
+      fileSize: file.size,
+    });
+
+    if (signedURL.error) {
+      throw new Error(signedURL.error);
+    }
+
+    const { signedUrl, url } = signedURL.success!;
+    await fetch(signedUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
+      body: file,
+    });
+
+    return url;
+  };
+
+  const onSubmit = async (values: ProductSchema) => {
+    try {
+      setIsLoading(true);
+      const url = await handleFileR2(values.imageFile);
+
+      await createProduct({
+        title: values.title,
+        description: values.description,
+        categoryId: values.categoryId,
+        type: values.type,
+        price: values.price,
+        imageUrl: url,
+      });
+
+      toast.success('Producto creado con éxito');
+    } catch (error) {
+      toast.error('Error al crear el producto');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {/* Left Column - Form Fields */}
         <div className='space-y-6'>
           <div className='space-y-2'>
@@ -98,6 +135,7 @@ export function FormProduct({ categories }: { categories: Category[] }) {
             </Label>
             <Input
               id='title'
+              disabled={isLoading}
               placeholder='Ingrese el título del producto'
               {...register('title')}
             />
@@ -110,9 +148,10 @@ export function FormProduct({ categories }: { categories: Category[] }) {
             </Label>
             <Textarea
               id='description'
+              disabled={isLoading}
               placeholder='Ingrese la descripción del producto'
               {...register('description')}
-              className='min-h-[180px]'
+              className='min-h-[90px]'
             />
             {errors.description && (
               <FormError name={errors.description.message!} />
@@ -123,7 +162,7 @@ export function FormProduct({ categories }: { categories: Category[] }) {
             <Label htmlFor='category' className='font-bold mb-2 block'>
               Categoría
             </Label>
-            <Select onValueChange={handleCategoryChange}>
+            <Select disabled={isLoading} onValueChange={handleCategoryChange}>
               <SelectTrigger id='category'>
                 <SelectValue placeholder='Seleccione una categoría' />
               </SelectTrigger>
@@ -148,7 +187,11 @@ export function FormProduct({ categories }: { categories: Category[] }) {
           </div>
 
           <div className='flex items-center justify-start gap-2'>
-            <Switch id='digital' onCheckedChange={handleCheckedChange} />
+            <Switch
+              disabled={isLoading}
+              id='digital'
+              onCheckedChange={handleCheckedChange}
+            />
             <Label htmlFor='digital'>Digital</Label>
           </div>
 
@@ -159,6 +202,8 @@ export function FormProduct({ categories }: { categories: Category[] }) {
             <Input
               id='price'
               type='number'
+              step={0.01}
+              disabled={isLoading}
               placeholder='Ingrese el precio del producto'
               {...register('price')}
             />
@@ -174,7 +219,11 @@ export function FormProduct({ categories }: { categories: Category[] }) {
             </Label>
             <div className='grid gap-4'>
               <div
-                className='border-2 border-dashed border-gray-300 hover:border-primary rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors h-full min-h-[280px]'
+                className={`border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors h-full min-h-[280px] ${
+                  isLoading
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:border-primary'
+                }`}
                 onClick={() => fileInputRef.current?.click()}
               >
                 {imagePreview ? (
@@ -192,7 +241,7 @@ export function FormProduct({ categories }: { categories: Category[] }) {
                     <p className='text-sm font-medium'>
                       Click para subir una imagen
                     </p>
-                    <p className='text-xs'>SVG, PNG, JPG or GIF (max. 5MB)</p>
+                    <p className='text-xs'>JPG, PNG o WEBP (max. 1MB)</p>
                   </div>
                 )}
                 <input
@@ -202,6 +251,7 @@ export function FormProduct({ categories }: { categories: Category[] }) {
                   accept='image/*'
                   className='hidden'
                   onChange={handleImageChange}
+                  disabled={isLoading}
                 />
               </div>
               {errors.imageFile && (
@@ -237,9 +287,13 @@ export function FormProduct({ categories }: { categories: Category[] }) {
           </Link>
         </Button>
 
-        <Button type='submit'>
-          <RiUploadCloudFill className='mr-2 h-4 w-4' />
-          Create Product
+        <Button type='submit' disabled={isLoading}>
+          {!isLoading ? (
+            <RiUploadCloudFill className='mr-2 h-4 w-4' />
+          ) : (
+            <RiLoader2Line className='mr-2 h-4 w-4 animate-spin' />
+          )}
+          {isLoading ? 'Creando Producto' : 'Crear Producto'}
         </Button>
       </div>
     </form>

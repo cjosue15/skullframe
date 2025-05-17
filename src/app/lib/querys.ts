@@ -1,6 +1,6 @@
+import { db } from '@/db/index';
 import { categoriesTable } from '@/db/schema';
 import { Category } from '../dtos/categories.dtos';
-import { db } from '@/db/index';
 
 export async function getCategories() {
   try {
