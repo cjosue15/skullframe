@@ -31,3 +31,7 @@ export interface Product {
   slug: string;
   fileUrl?: string;
 }
+
+export interface ProductWithCategory extends Product {
+  categoryName: string;
+}

@@ -1,18 +1,10 @@
+import { getProdcuts } from '@/app/lib/querys';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFoot,
-  TableHead,
-  TableHeaderCell,
-  TableRoot,
-  TableRow,
-} from '@/components/Table';
+
 import { RiAddLine } from '@remixicon/react';
 import Link from 'next/link';
+import { ProductsTable } from './products-table';
 
 const data: Array<{
   id: number;
@@ -70,7 +62,9 @@ const data: Array<{
   },
 ];
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProdcuts();
+
   return (
     <section>
       <div className='mb-6 mt-4 flex items-center justify-between'>
@@ -87,43 +81,7 @@ export default function ProductsPage() {
       </div>
 
       <Card>
-        <TableRoot>
-          <Table>
-            <TableCaption>Recent invoices.</TableCaption>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Sales ($)</TableHeaderCell>
-                <TableHeaderCell>Region</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-                <TableHeaderCell className='text-right'>
-                  Working Hours (h)
-                </TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell className='text-right'>{item.sales}</TableCell>
-                  <TableCell>{item.region}</TableCell>
-                  <TableCell>{item.status}</TableCell>
-                  <TableCell className='text-right'>{item.hours}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFoot>
-              <TableRow>
-                <TableHeaderCell colSpan={2} scope='row' className='text-right'>
-                  4,642
-                </TableHeaderCell>
-                <TableHeaderCell colSpan={3} scope='row' className='text-right'>
-                  497
-                </TableHeaderCell>
-              </TableRow>
-            </TableFoot>
-          </Table>
-        </TableRoot>
+        <ProductsTable products={products} />
       </Card>
     </section>
   );
