@@ -3,7 +3,7 @@
 import { FormError } from '@/app/components/FormError';
 import { Category } from '@/app/dtos/categories.dtos';
 import { ProductSchema, productSchema } from '@/app/dtos/products.dtos';
-import { slugify } from '@/app/lib/utils';
+import { slugify, validateImageFile } from '@/app/lib/utils';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
@@ -25,11 +25,11 @@ import {
 } from '@remixicon/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { createProduct, getSignedURL } from '../actions';
-import { useRouter } from 'next/navigation';
 
 export function FormProduct({ categories }: { categories: Category[] }) {
   const {
@@ -66,18 +66,11 @@ export function FormProduct({ categories }: { categories: Category[] }) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!validTypes.includes(file.type)) {
+      const errorMsg = validateImageFile(file);
+      if (errorMsg) {
         setError('imageFile', {
           type: 'manual',
-          message: 'Tipo de archivo no permitido. Solo JPG, PNG o WEBP.',
-        });
-        return;
-      }
-      if (file.size > 1024 * 1024) {
-        setError('imageFile', {
-          type: 'manual',
-          message: 'El tamaño del archivo debe ser menor a 1MB.',
+          message: errorMsg,
         });
         return;
       }

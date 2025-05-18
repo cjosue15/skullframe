@@ -2,6 +2,7 @@
 
 import { Product } from '@/app/dtos/products.dtos';
 import { r2 } from '@/app/lib/r2';
+import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/app/lib/utils';
 import { db } from '@/db/index';
 import { productsTable } from '@/db/schema';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
@@ -16,10 +17,6 @@ type SignedURLResponse = Promise<
     }
   | { error: string; success?: undefined }
 >;
-
-const allowedFileTypes = ['image/jpeg', 'image/png', 'image/webp'];
-
-const maxFileSize = 1024 * 1024 * 1;
 
 type GetSignedURLParams = {
   fileType: string;
@@ -55,13 +52,11 @@ export const getSignedURL = async ({
   //     success: undefined,
   //   };
 
-  if (!allowedFileTypes.includes(fileType)) {
+  if (!ALLOWED_IMAGE_TYPES.includes(fileType)) {
     return { error: 'File type not allowed' };
   }
 
-  console.log('fileSize', fileSize);
-
-  if (fileSize > maxFileSize) {
+  if (fileSize > MAX_IMAGE_SIZE) {
     return { error: 'File size too large' };
   }
 
