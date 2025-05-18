@@ -1,0 +1,1 @@
+ALTER TABLE `products` ADD `updated_at` integer DEFAULT '"2025-05-18T08:09:45.673Z"' NOT NULL;

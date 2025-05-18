@@ -22,6 +22,13 @@
       "when": 1747525635920,
       "tag": "0002_dear_quasimodo",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1747555785676,
+      "tag": "0003_strong_skin",
+      "breakpoints": true
     }
   ]
 }

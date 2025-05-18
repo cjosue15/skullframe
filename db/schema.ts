@@ -17,4 +17,7 @@ export const productsTable = sqliteTable('products', {
   type: text('type', { enum: ['physical', 'digital'] }).notNull(),
   fileUrl: text('file_url'),
   slug: text('slug').notNull().unique(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .notNull()
+    .default(new Date()),
 });
