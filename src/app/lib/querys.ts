@@ -27,6 +27,7 @@ export async function getProdcuts() {
         fileUrl: productsTable.fileUrl,
         slug: productsTable.slug,
         type: productsTable.type,
+        updatedAt: productsTable.updatedAt,
       })
       .from(productsTable)
       .innerJoin(

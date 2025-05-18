@@ -1,11 +1,26 @@
 'use server';
 
+import { Product } from '@/app/dtos/products.dtos';
 import { r2 } from '@/app/lib/r2';
 import { db } from '@/db/index';
 import { productsTable } from '@/db/schema';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+
+export const getOneProduct = async (slug: string) => {
+  try {
+    const product = await db
+      .select()
+      .from(productsTable)
+      .where(eq(productsTable.slug, slug))
+      .limit(1)
+      .then((res) => res[0]);
+    return product as Product;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const deleteProduct = async (id: number) => {
   try {

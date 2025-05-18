@@ -23,6 +23,7 @@ import {
 } from '@/components/Dialog';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
 interface ProductsMenuProps {
   product: ProductWithCategory;
@@ -53,9 +54,11 @@ export function ProductsMenu({ product }: ProductsMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className='min-w-28'>
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <RiPencilLine size={16} className='mr-2' /> Editar
-          </DropdownMenuItem>
+          <Link href={`/admin/products/edit/${product.slug}`}>
+            <DropdownMenuItem>
+              <RiPencilLine size={16} className='mr-2' /> Editar
+            </DropdownMenuItem>
+          </Link>
           <AlertDialog onAccept={() => handleDelete()} isLoading={isLoading}>
             <DropdownMenuItem
               onSelect={(e) => {

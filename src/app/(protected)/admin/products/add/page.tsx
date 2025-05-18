@@ -1,15 +1,17 @@
-import { Card } from '@/components/Card';
-import React from 'react';
-import { FormProduct } from './FormProduct';
+import { Product } from '@/app/dtos/products.dtos';
 import { getCategories } from '@/app/lib/querys';
+import { Card } from '@/components/Card';
+import { FormProduct } from './FormProduct';
 
-async function ProductPage() {
+async function ProductPage({ product }: { product?: Product }) {
   const categories = await getCategories();
   return (
     <Card>
-      <h1 className='text-2xl font-bold mb-6'>Agregar Producto</h1>
+      <h1 className='text-2xl font-bold mb-6'>
+        {`${product?.slug ? 'Editar' : 'Agregar'} `} Producto
+      </h1>
 
-      <FormProduct categories={categories} />
+      <FormProduct categories={categories} product={product} />
     </Card>
   );
 }

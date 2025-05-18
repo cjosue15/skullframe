@@ -2,7 +2,11 @@
 
 import { FormError } from '@/app/components/FormError';
 import { Category } from '@/app/dtos/categories.dtos';
-import { ProductSchema, productSchema } from '@/app/dtos/products.dtos';
+import {
+  Product,
+  ProductSchema,
+  productSchema,
+} from '@/app/dtos/products.dtos';
 import { slugify, validateImageFile } from '@/app/lib/utils';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -29,9 +33,21 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { createProduct, getSignedURL } from './actions';
+import {
+  copyImageToNewSlug,
+  createProduct,
+  deleteImageBySlug,
+  getSignedURL,
+  updateProduct,
+} from './actions';
 
-export function FormProduct({ categories }: { categories: Category[] }) {
+export function FormProduct({
+  categories,
+  product,
+}: {
+  categories: Category[];
+  product?: Product;
+}) {
   const {
     register,
     handleSubmit,
@@ -49,11 +65,14 @@ export function FormProduct({ categories }: { categories: Category[] }) {
       price: 0,
       imageFile: undefined,
       slug: '',
+      imagePreview: product?.imageUrl ?? '',
     },
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | undefined>(
+    undefined
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -62,6 +81,22 @@ export function FormProduct({ categories }: { categories: Category[] }) {
     const slug = slugify(title || '');
     setValue('slug', slug);
   }, [watch('title'), setValue]);
+
+  useEffect(() => {
+    setValue('imagePreview', imagePreview);
+  }, [imagePreview, setValue]);
+
+  useEffect(() => {
+    if (product) {
+      setValue('title', product.title);
+      setValue('description', product.description);
+      setValue('categoryId', product.categoryId);
+      setValue('type', product.type);
+      setValue('price', product.price);
+      setValue('slug', product.slug);
+      setImagePreview(product.imageUrl);
+    }
+  }, [product, setValue]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -98,11 +133,16 @@ export function FormProduct({ categories }: { categories: Category[] }) {
     setValue('type', checked ? 'digital' : 'physical');
   };
 
-  const handleFileR2 = async (file: File, baseSlug: string) => {
+  const handleFileR2 = async (
+    file: File,
+    baseSlug: string,
+    forceSlug?: string
+  ) => {
     const signedURL = await getSignedURL({
       fileType: file.type,
       fileSize: file.size,
       baseSlug: baseSlug,
+      forceSlug,
     });
 
     if (signedURL.error) {
@@ -124,19 +164,44 @@ export function FormProduct({ categories }: { categories: Category[] }) {
   const onSubmit = async (values: ProductSchema) => {
     try {
       setIsLoading(true);
-      const { url, slug } = await handleFileR2(values.imageFile, values.slug);
+      let url = product?.imageUrl || '';
+      let oldSlug = product?.slug || '';
+      let newSlug = values.slug;
 
-      await createProduct({
-        title: values.title,
-        description: values.description,
-        categoryId: values.categoryId,
-        type: values.type,
-        price: values.price,
-        imageUrl: url,
-        slug,
-      });
+      if (values.imageFile) {
+        // Si el slug no cambió, usa el mismo para la imagen
+        const { url: imageUrl, slug: usedSlug } = await handleFileR2(
+          values.imageFile,
+          values.slug,
+          product && oldSlug === newSlug ? oldSlug : undefined // <-- aquí
+        );
+        url = imageUrl;
+        newSlug = usedSlug; // Si el slug cambió, borra la imagen anterior
+        if (product && oldSlug !== newSlug) {
+          await deleteImageBySlug(oldSlug);
+        }
+      } else if (product && oldSlug !== newSlug) {
+        // Si el slug cambió pero no hay nueva imagen, copia la imagen y borra la anterior
+        url = await copyImageToNewSlug(oldSlug, newSlug);
+        await deleteImageBySlug(oldSlug);
+      }
 
-      toast.success('Producto creado con éxito');
+      if (product) {
+        await updateProduct({
+          ...values,
+          id: product.id,
+          imageUrl: url,
+          slug: newSlug,
+        });
+        toast.success('Producto actualizado con éxito');
+      } else {
+        await createProduct({
+          ...values,
+          imageUrl: url,
+          slug: newSlug,
+        });
+        toast.success('Producto creado con éxito');
+      }
       router.push('/admin/products');
     } catch (error) {
       toast.error('Error al crear el producto');
@@ -187,7 +252,11 @@ export function FormProduct({ categories }: { categories: Category[] }) {
             <Label htmlFor='category' className='font-bold mb-2 block'>
               Categoría
             </Label>
-            <Select disabled={isLoading} onValueChange={handleCategoryChange}>
+            <Select
+              defaultValue={product?.categoryId?.toString()}
+              disabled={isLoading}
+              onValueChange={handleCategoryChange}
+            >
               <SelectTrigger id='category'>
                 <SelectValue placeholder='Seleccione una categoría' />
               </SelectTrigger>
@@ -254,7 +323,10 @@ export function FormProduct({ categories }: { categories: Category[] }) {
                 {imagePreview ? (
                   <div className='relative w-full h-full min-h-[240px]'>
                     <Image
-                      src={imagePreview || '/placeholder.svg'}
+                      src={
+                        `${imagePreview}?v=${product?.updatedAt?.getTime()}` ||
+                        '/placeholder.svg'
+                      }
                       alt='Product preview'
                       fill
                       className='object-contain rounded-md'
@@ -280,14 +352,14 @@ export function FormProduct({ categories }: { categories: Category[] }) {
                 />
               </div>
               {errors.imageFile && (
-                <FormError name={errors.imageFile.message!} />
+                <FormError name={errors.imageFile.message as string} />
               )}
               {imagePreview && (
                 <Button
                   type='button'
                   variant='secondary'
                   onClick={() => {
-                    setImagePreview(null);
+                    setImagePreview(undefined);
                     setValue('imageFile', undefined as unknown as File);
                     setError('imageFile', {
                       type: 'manual',

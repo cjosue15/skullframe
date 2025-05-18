@@ -38,7 +38,7 @@ export function ProductsTable({
               <TableCell className='text-right'>S/ {item.price}</TableCell>
               <TableCell>
                 <Image
-                  src={item.imageUrl}
+                  src={`${item.imageUrl}?v=${item.updatedAt?.getTime()}`}
                   alt={item.title}
                   width={50}
                   height={50}
@@ -55,6 +55,13 @@ export function ProductsTable({
               </TableCell>
             </TableRow>
           ))}
+          {products.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={7} className='text-center'>
+                No hay productos
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </TableRoot>
