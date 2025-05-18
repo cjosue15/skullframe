@@ -139,6 +139,9 @@ export async function createProduct({
       })
       .returning();
     revalidatePath('/admin/products');
+    revalidatePath('/');
+    revalidatePath('/store');
+    revalidatePath(`/product/${slug}`);
   } catch (error) {
     throw error;
   }
@@ -175,6 +178,10 @@ export async function updateProduct({
     revalidatePath('/admin/products');
     revalidatePath(`/admin/products/${slug}`);
     revalidatePath(`/admin/products/edit/${slug}`);
+
+    revalidatePath('/');
+    revalidatePath('/store');
+    revalidatePath(`/product/${slug}`);
   } catch (error) {
     throw error;
   }

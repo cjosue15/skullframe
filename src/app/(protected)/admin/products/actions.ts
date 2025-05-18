@@ -48,6 +48,9 @@ export const deleteProduct = async (id: number) => {
 
     revalidatePath('/admin/products');
     revalidatePath(`/admin/products/${productDeleted.slug}`);
+    revalidatePath('/');
+    revalidatePath('/store');
+    revalidatePath(`/product/${productDeleted.slug}`);
   } catch (error) {
     throw error;
   }

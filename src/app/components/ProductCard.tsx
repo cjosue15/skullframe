@@ -1,11 +1,9 @@
 'use client';
 
-import React from 'react';
-import { Product } from '../dtos/products.dtos';
 import Image from 'next/image';
-import { Button } from '@/components/Button';
-import { RiWhatsappLine } from '@remixicon/react';
 import Link from 'next/link';
+import { Product } from '../dtos/products.dtos';
+import { ContactButton } from './contact-button';
 
 export function ProductCard({ product }: { product: Product }) {
   return (
@@ -26,9 +24,6 @@ export function ProductCard({ product }: { product: Product }) {
             {product.title}
           </h3>
           <p className='text-gray-600 mt-2 text-pretty line-clamp-3'>
-            {/* {product.description.length > 100
-              ? `${product.description.slice(0, 100)}...`
-              : product.description} */}
             {product.description}
           </p>
         </div>
@@ -37,12 +32,8 @@ export function ProductCard({ product }: { product: Product }) {
           <p className='text-lg font-bold text-primary mt-4'>
             S/ {product.price.toFixed(2)}
           </p>
-          <Button
-            className='flex items-center gap-2 cursor-pointer'
-            onClick={(e) => e.preventDefault()}
-          >
-            Contactar <RiWhatsappLine size={18} />
-          </Button>
+
+          <ContactButton onClick={(e) => e.preventDefault()} />
         </div>
       </article>
     </Link>
