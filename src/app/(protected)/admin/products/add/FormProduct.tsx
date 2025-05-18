@@ -210,6 +210,20 @@ export function FormProduct({
     }
   };
 
+  const isEdit = Boolean(product);
+  const buttonLabel = isLoading
+    ? isEdit
+      ? 'Actualizando producto...'
+      : 'Creando producto...'
+    : isEdit
+    ? 'Actualizar producto'
+    : 'Crear producto';
+  const buttonIcon = isLoading ? (
+    <RiLoader2Line className='mr-2 h-4 w-4 animate-spin' />
+  ) : (
+    <RiUploadCloudFill className='mr-2 h-4 w-4' />
+  );
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -324,8 +338,11 @@ export function FormProduct({
                   <div className='relative w-full h-full min-h-[240px]'>
                     <Image
                       src={
-                        `${imagePreview}?v=${product?.updatedAt?.getTime()}` ||
-                        '/placeholder.svg'
+                        imagePreview?.startsWith('data:')
+                          ? imagePreview
+                          : `${imagePreview}?v=${
+                              product?.updatedAt?.getTime() ?? Date.now()
+                            }`
                       }
                       alt='Product preview'
                       fill
@@ -385,12 +402,8 @@ export function FormProduct({
         </Button>
 
         <Button type='submit' disabled={isLoading}>
-          {!isLoading ? (
-            <RiUploadCloudFill className='mr-2 h-4 w-4' />
-          ) : (
-            <RiLoader2Line className='mr-2 h-4 w-4 animate-spin' />
-          )}
-          {isLoading ? 'Creando Producto' : 'Crear Producto'}
+          {buttonIcon}
+          {buttonLabel}
         </Button>
       </div>
     </form>
