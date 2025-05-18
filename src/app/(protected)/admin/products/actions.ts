@@ -6,29 +6,48 @@ import { db } from '@/db/index';
 import { productsTable } from '@/db/schema';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 type SignedURLResponse = Promise<
-  | { error: undefined; success: { signedUrl: string; url: string } }
+  | {
+      error: undefined;
+      success: { signedUrl: string; url: string; slug: string };
+    }
   | { error: string; success?: undefined }
 >;
 
 const allowedFileTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
-const maxFileSize = 1048576 * 10;
+const maxFileSize = 1024 * 1024 * 1;
 
 type GetSignedURLParams = {
   fileType: string;
   fileSize: number;
-  // checksum: string;
+  baseSlug: string;
 };
+
+async function generateUniqueSlug(baseSlug: string) {
+  let slug = baseSlug;
+  let count = 1;
+
+  while (
+    await db
+      .select()
+      .from(productsTable)
+      .where(eq(productsTable.slug, slug))
+      .get()
+  ) {
+    slug = `${baseSlug}-${count++}`;
+  }
+  return slug;
+}
 
 export const getSignedURL = async ({
   fileType,
   fileSize,
-}: // checksum,
-GetSignedURLParams): SignedURLResponse => {
+  baseSlug,
+}: GetSignedURLParams): SignedURLResponse => {
   // const session = await getServerSession(authOptions);
   // if (!session) {
   //   return {
@@ -40,17 +59,17 @@ GetSignedURLParams): SignedURLResponse => {
     return { error: 'File type not allowed' };
   }
 
+  console.log('fileSize', fileSize);
+
   if (fileSize > maxFileSize) {
     return { error: 'File size too large' };
   }
 
-  // const fileName = `${checksum}-${Date.now()}`;
-
-  // TODO: change name of file
+  const slug = await generateUniqueSlug(baseSlug);
 
   const putObjectCommand = new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME,
-    Key: 'test',
+    Key: slug,
     ContentType: fileType,
   });
 
@@ -58,13 +77,14 @@ GetSignedURLParams): SignedURLResponse => {
     expiresIn: 60,
   });
 
-  const url = `${process.env.R2_BUCKET_PATH}/test`;
+  const url = `${process.env.R2_BUCKET_PATH}/${slug}`;
 
   return {
     error: undefined,
     success: {
       signedUrl,
       url,
+      slug,
     },
   };
 };
@@ -77,20 +97,24 @@ export async function createProduct({
   price,
   imageUrl,
   fileUrl,
+  slug,
 }: Product) {
-  await db
-    .insert(productsTable)
-    .values({
-      title,
-      description,
-      categoryId,
-      type,
-      price,
-      imageUrl,
-      fileUrl,
-    })
-    .returning();
-
-  revalidatePath('/admin/products');
-  redirect('/admin/products');
+  try {
+    await db
+      .insert(productsTable)
+      .values({
+        title,
+        description,
+        categoryId,
+        type,
+        price,
+        imageUrl,
+        fileUrl,
+        slug,
+      })
+      .returning();
+    revalidatePath('/admin/products');
+  } catch (error) {
+    throw error;
+  }
 }

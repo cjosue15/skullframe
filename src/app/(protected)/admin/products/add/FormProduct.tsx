@@ -3,6 +3,7 @@
 import { FormError } from '@/app/components/FormError';
 import { Category } from '@/app/dtos/categories.dtos';
 import { ProductSchema, productSchema } from '@/app/dtos/products.dtos';
+import { slugify } from '@/app/lib/utils';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
@@ -24,10 +25,11 @@ import {
 } from '@remixicon/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createProduct, getSignedURL } from '../actions';
 import { toast } from 'sonner';
+import { createProduct, getSignedURL } from '../actions';
+import { useRouter } from 'next/navigation';
 
 export function FormProduct({ categories }: { categories: Category[] }) {
   const {
@@ -36,6 +38,7 @@ export function FormProduct({ categories }: { categories: Category[] }) {
     setValue,
     formState: { errors },
     setError,
+    watch,
   } = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -45,16 +48,39 @@ export function FormProduct({ categories }: { categories: Category[] }) {
       type: 'physical',
       price: 0,
       imageFile: undefined,
+      slug: '',
     },
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const title = watch('title');
+    const slug = slugify(title || '');
+    setValue('slug', slug);
+  }, [watch('title'), setValue]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        setError('imageFile', {
+          type: 'manual',
+          message: 'Tipo de archivo no permitido. Solo JPG, PNG o WEBP.',
+        });
+        return;
+      }
+      if (file.size > 1024 * 1024) {
+        setError('imageFile', {
+          type: 'manual',
+          message: 'El tamaño del archivo debe ser menor a 1MB.',
+        });
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -69,7 +95,6 @@ export function FormProduct({ categories }: { categories: Category[] }) {
   };
 
   const handleCategoryChange = (value: string) => {
-    console.log('Selected category ID:', value);
     setValue('categoryId', parseInt(value));
     setError('categoryId', {
       type: 'manual',
@@ -80,17 +105,18 @@ export function FormProduct({ categories }: { categories: Category[] }) {
     setValue('type', checked ? 'digital' : 'physical');
   };
 
-  const handleFileR2 = async (file: File) => {
+  const handleFileR2 = async (file: File, baseSlug: string) => {
     const signedURL = await getSignedURL({
       fileType: file.type,
       fileSize: file.size,
+      baseSlug: baseSlug,
     });
 
     if (signedURL.error) {
       throw new Error(signedURL.error);
     }
 
-    const { signedUrl, url } = signedURL.success!;
+    const { signedUrl, url, slug } = signedURL.success!;
     await fetch(signedUrl, {
       method: 'PUT',
       headers: {
@@ -99,13 +125,13 @@ export function FormProduct({ categories }: { categories: Category[] }) {
       body: file,
     });
 
-    return url;
+    return { url, slug };
   };
 
   const onSubmit = async (values: ProductSchema) => {
     try {
       setIsLoading(true);
-      const url = await handleFileR2(values.imageFile);
+      const { url, slug } = await handleFileR2(values.imageFile, values.slug);
 
       await createProduct({
         title: values.title,
@@ -114,9 +140,11 @@ export function FormProduct({ categories }: { categories: Category[] }) {
         type: values.type,
         price: values.price,
         imageUrl: url,
+        slug,
       });
 
       toast.success('Producto creado con éxito');
+      router.push('/admin/products');
     } catch (error) {
       toast.error('Error al crear el producto');
     } finally {
@@ -140,6 +168,10 @@ export function FormProduct({ categories }: { categories: Category[] }) {
               {...register('title')}
             />
             {errors.title && <FormError name={errors.title.message!} />}
+
+            <small className='block mt-1 text-xs text-gray-500'>
+              Slug: {watch('slug')}
+            </small>
           </div>
 
           <div className='space-y-2'>
@@ -248,7 +280,7 @@ export function FormProduct({ categories }: { categories: Category[] }) {
                   ref={fileInputRef}
                   type='file'
                   id='image'
-                  accept='image/*'
+                  accept='image/jpeg,image/png,image/webp'
                   className='hidden'
                   onChange={handleImageChange}
                   disabled={isLoading}
