@@ -20,4 +20,7 @@ export const productsTable = sqliteTable('products', {
   updatedAt: integer('updated_at', { mode: 'timestamp' })
     .notNull()
     .default(new Date()),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(new Date()),
 });
