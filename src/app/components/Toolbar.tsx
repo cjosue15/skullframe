@@ -1,4 +1,4 @@
-import React from 'react';
+import { UserButton } from '@clerk/nextjs';
 import { RiMenuLine } from '@remixicon/react';
 
 export function Toolbar({
@@ -12,9 +12,7 @@ export function Toolbar({
         <RiMenuLine className='text-black' />
       </button>
 
-      {/* <button className='bg-white text-primary px-4 py-2 rounded'>
-        Logout
-      </button> */}
+      <UserButton />
     </header>
   );
 }
