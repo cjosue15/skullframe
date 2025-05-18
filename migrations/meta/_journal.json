@@ -15,6 +15,13 @@
       "when": 1747341340242,
       "tag": "0001_busy_tomas",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1747525635920,
+      "tag": "0002_dear_quasimodo",
+      "breakpoints": true
     }
   ]
 }
