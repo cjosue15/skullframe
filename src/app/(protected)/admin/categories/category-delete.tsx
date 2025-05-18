@@ -1,5 +1,4 @@
 'use client';
-import { revalidate } from '@/app/actions/revalidate';
 import { Button } from '@/components/Button';
 import {
   Dialog,
@@ -14,6 +13,7 @@ import {
 import { RiDeleteBinLine } from '@remixicon/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { deleteCategory } from './actions';
 
 export const CategoryDelete = ({ id }: { id: number }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,25 +21,11 @@ export const CategoryDelete = ({ id }: { id: number }) => {
   async function handleDelete() {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/categories', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id }), // Replace with actual category ID
-      });
 
-      if (!response.ok) {
-        throw new Error('Error deleting category');
-      }
-
-      await response.json();
-      revalidate('/admin/categories');
-      revalidate('/admin/products');
-      revalidate('/admin/products/add');
+      await deleteCategory(id);
       toast.success('Categoría eliminada correctamente');
-    } catch (error) {
-      toast.error('Error al eliminar la categoría');
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setIsLoading(false);
     }

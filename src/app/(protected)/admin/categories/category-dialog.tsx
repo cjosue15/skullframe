@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/Input';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { createCategory, updateCategory } from './actions';
 
 interface CategoryDialogProps extends PropsWithChildren {
   category?: Category;
@@ -59,24 +60,14 @@ export const CategoryDialog = ({ category, children }: CategoryDialogProps) => {
   async function onSubmit(values: CategorySchema) {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/categories', {
-        method: category ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: category
-          ? JSON.stringify({ id: category.id, name: values.name })
-          : JSON.stringify(values),
-      });
+      const isEditing = !!category;
 
-      if (!response.ok) {
-        throw new Error(`Error ${category ? 'updating' : 'creating'} category`);
+      if (isEditing) {
+        await updateCategory(category.id, values.name);
+      } else {
+        await createCategory(values.name);
       }
 
-      await response.json();
-      revalidate('/admin/categories');
-      revalidate('/admin/products');
-      revalidate('/admin/products/add');
       reset();
       setIsOpen(false);
       toast.success(
