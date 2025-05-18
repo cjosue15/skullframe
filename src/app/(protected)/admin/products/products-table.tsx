@@ -9,6 +9,7 @@ import {
   TableRow,
 } from '@/components/Table';
 import Image from 'next/image';
+import { ProductsMenu } from './products-menu';
 
 export function ProductsTable({
   products,
@@ -26,9 +27,7 @@ export function ProductsTable({
             <TableHeaderCell>Imagen</TableHeaderCell>
             <TableHeaderCell>Categoría</TableHeaderCell>
             <TableHeaderCell>Tipo</TableHeaderCell>
-            <TableHeaderCell className='text-right'>
-              Working Hours (h)
-            </TableHeaderCell>
+            <TableHeaderCell className='text-right'>Acciones</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -51,7 +50,9 @@ export function ProductsTable({
               <TableCell>
                 {item.type === 'physical' ? 'Físico' : 'Digital'}
               </TableCell>
-              <TableCell className='text-right'></TableCell>
+              <TableCell className='text-right'>
+                <ProductsMenu product={item} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
