@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 
 export const Hero = () => {
   return (
-    <section className='pt-20 container mx-auto'>
+    <section className='pt-10 container mx-auto'>
       <div className='flex flex-col items-center justify-center gap-12'>
         <motion.div
           animate={{
