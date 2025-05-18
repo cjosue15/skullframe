@@ -34,7 +34,9 @@ export function ProductsTable({
           {products.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.title}</TableCell>
-              <TableCell>{item.description}</TableCell>
+              <TableCell className='max-w-[200px] overflow-hidden text-ellipsis'>
+                {item.description}
+              </TableCell>
               <TableCell className='text-right'>S/ {item.price}</TableCell>
               <TableCell>
                 <Image
