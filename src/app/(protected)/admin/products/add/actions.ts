@@ -2,6 +2,7 @@
 
 import { Product } from '@/app/dtos/products.dtos';
 import { r2 } from '@/app/lib/r2';
+import { checkUser } from '@/app/lib/server';
 import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/app/lib/utils';
 import { db } from '@/db/index';
 import { productsTable } from '@/db/schema';
@@ -30,6 +31,8 @@ type GetSignedURLParams = {
 };
 
 async function generateUniqueSlug(baseSlug: string) {
+  await checkUser();
+
   let slug = baseSlug;
   let count = 1;
 
@@ -51,12 +54,7 @@ export const getSignedURL = async ({
   baseSlug,
   forceSlug,
 }: GetSignedURLParams): SignedURLResponse => {
-  // const session = await getServerSession(authOptions);
-  // if (!session) {
-  //   return {
-  //     error: 'No tienes permisos para realizar esta acción',
-  //     success: undefined,
-  //   };
+  await checkUser();
 
   if (!ALLOWED_IMAGE_TYPES.includes(fileType)) {
     return { error: 'File type not allowed' };
@@ -92,6 +90,7 @@ export const getSignedURL = async ({
 
 // Copia la imagen a la nueva ruta (nuevo slug)
 export async function copyImageToNewSlug(oldSlug: string, newSlug: string) {
+  await checkUser();
   await r2.send(
     new CopyObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
@@ -105,6 +104,7 @@ export async function copyImageToNewSlug(oldSlug: string, newSlug: string) {
 
 // Borra la imagen antigua
 export async function deleteImageBySlug(slug: string) {
+  await checkUser();
   await r2.send(
     new DeleteObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
@@ -124,6 +124,7 @@ export async function createProduct({
   slug,
 }: Product) {
   try {
+    await checkUser();
     await db
       .insert(productsTable)
       .values({
@@ -155,6 +156,7 @@ export async function updateProduct({
   slug,
 }: Product) {
   try {
+    await checkUser();
     await db
       .update(productsTable)
       .set({

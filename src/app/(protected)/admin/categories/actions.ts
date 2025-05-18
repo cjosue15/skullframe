@@ -1,5 +1,6 @@
 'use server';
 
+import { checkUser } from '@/app/lib/server';
 import { db } from '@/db/index';
 import { categoriesTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -7,6 +8,7 @@ import { revalidatePath } from 'next/cache';
 
 export const deleteCategory = async (id: number) => {
   try {
+    await checkUser();
     await db.delete(categoriesTable).where(eq(categoriesTable.id, id));
 
     revalidatePath('/admin/categories');
@@ -28,6 +30,7 @@ export const deleteCategory = async (id: number) => {
 
 export const createCategory = async (name: string) => {
   try {
+    await checkUser();
     await db.insert(categoriesTable).values({ name });
 
     revalidatePath('/admin/categories');
@@ -40,6 +43,7 @@ export const createCategory = async (name: string) => {
 
 export const updateCategory = async (id: number, name: string) => {
   try {
+    await checkUser();
     await db
       .update(categoriesTable)
       .set({ name })

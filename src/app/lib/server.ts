@@ -5,3 +5,11 @@ export async function getSecureUser() {
 
   return user;
 }
+
+export async function checkUser() {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new Error('Not authenticated');
+  }
+}

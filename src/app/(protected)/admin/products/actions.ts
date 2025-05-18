@@ -2,6 +2,7 @@
 
 import { Product } from '@/app/dtos/products.dtos';
 import { r2 } from '@/app/lib/r2';
+import { checkUser } from '@/app/lib/server';
 import { db } from '@/db/index';
 import { productsTable } from '@/db/schema';
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
@@ -10,6 +11,8 @@ import { revalidatePath } from 'next/cache';
 
 export const getOneProduct = async (slug: string) => {
   try {
+    await checkUser();
+
     const product = await db
       .select()
       .from(productsTable)
@@ -24,6 +27,8 @@ export const getOneProduct = async (slug: string) => {
 
 export const deleteProduct = async (id: number) => {
   try {
+    await checkUser();
+
     const productDeleted = await db
       .delete(productsTable)
       .where(eq(productsTable.id, id))
