@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import '@fontsource/bungee-spice';
-import '../globals.css';
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,14 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className='antialiased'>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ClerkProvider>{children}</ClerkProvider>
+    <ClerkProvider>
+      <html lang='en' className='antialiased'>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
 
-        <div className='absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]'></div>
-      </body>
-    </html>
+          <div className='absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]'></div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

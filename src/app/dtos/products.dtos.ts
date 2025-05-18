@@ -57,6 +57,7 @@ export interface Product {
   type: 'physical' | 'digital';
   slug: string;
   updatedAt?: Date;
+  createdAt?: Date;
   fileUrl?: string;
 }
 

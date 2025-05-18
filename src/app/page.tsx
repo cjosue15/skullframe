@@ -1,5 +1,5 @@
-import { Hero } from '../components/Hero';
-import { LastThreeProducts } from '../components/LastThreeProducts';
+import { Hero } from './components/Hero';
+import { LastThreeProducts } from './components/LastThreeProducts';
 import { getLastThreeProducts } from './actions';
 
 export default async function Home() {
