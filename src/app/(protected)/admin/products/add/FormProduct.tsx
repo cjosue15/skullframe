@@ -29,7 +29,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { createProduct, getSignedURL } from '../actions';
+import { createProduct, getSignedURL } from './actions';
 
 export function FormProduct({ categories }: { categories: Category[] }) {
   const {
