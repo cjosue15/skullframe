@@ -5,8 +5,6 @@ import { getLastThreeProducts } from './actions';
 export default async function Home() {
   const products = await getLastThreeProducts();
 
-  console.log('products', products);
-
   return (
     <>
       <Hero />

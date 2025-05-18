@@ -38,7 +38,6 @@ export function ProductsMenu({ product }: ProductsMenuProps) {
       await deleteProduct(product.id!);
       toast.success('Producto eliminado correctamente');
     } catch (error) {
-      console.log(error);
       toast.error('Error al eliminar el producto');
     } finally {
       setIsLoading(false);
