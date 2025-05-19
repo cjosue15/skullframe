@@ -4,6 +4,24 @@ import { RiArrowLeftLongLine } from '@remixicon/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const product = await getProduct(params.slug);
+
+  return {
+    title: product.title,
+    description: product.description,
+    openGraph: {
+      title: product.title,
+      description: product.description,
+      images: [product.imageUrl],
+    },
+  };
+}
+
 export default async function ProductPage({
   params,
 }: {
