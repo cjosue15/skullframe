@@ -2,7 +2,7 @@
 
 import { db } from '@/db/index';
 import { categoriesTable, productsTable } from '@/db/schema';
-import { asc, eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { Product, ProductWithCategory } from './dtos/products.dtos';
 
 export async function getLastThreeProducts() {
@@ -10,7 +10,7 @@ export async function getLastThreeProducts() {
     const products = (await db
       .select()
       .from(productsTable)
-      .orderBy(asc(productsTable.createdAt))
+      .orderBy(desc(productsTable.id))
       .limit(3)) as Product[];
 
     return products;

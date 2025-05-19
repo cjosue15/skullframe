@@ -165,7 +165,7 @@ export function FormProduct({
     try {
       setIsLoading(true);
       let url = product?.imageUrl || '';
-      let oldSlug = product?.slug || '';
+      const oldSlug = product?.slug || '';
       let newSlug = values.slug;
 
       if (values.imageFile) {
