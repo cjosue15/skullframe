@@ -1,5 +1,8 @@
+import { Button } from '@/components/Button';
 import { Product } from '../dtos/products.dtos';
 import { ProductCard } from './ProductCard';
+import Link from 'next/link';
+import { RiArrowRightLongLine } from '@remixicon/react';
 
 export const LastThreeProducts = ({ products }: { products: Product[] }) => {
   return (
@@ -13,9 +16,12 @@ export const LastThreeProducts = ({ products }: { products: Product[] }) => {
         ))}
       </div>
       <div className='flex justify-center mt-10'>
-        <button className='bg-primary text-white py-2 px-4 rounded-lg hover:bg-secondary transition duration-300'>
-          Ver más productos
-        </button>
+        <Button asChild>
+          <Link href='/store'>
+            Ver más productos
+            <RiArrowRightLongLine className='ml-4' size={16} />
+          </Link>
+        </Button>
       </div>
     </section>
   );
