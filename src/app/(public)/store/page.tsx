@@ -1,6 +1,18 @@
 import { ProductCard } from '@/app/components/ProductCard';
 import { getCategories, getProdcuts } from '@/app/lib/querys';
 
+export const generateMetadata = () => ({
+  title: 'Tienda | Skullframe',
+  description:
+    'Explora y compra productos exclusivos en la tienda de Skullframe. Encuentra arte, accesorios y más.',
+  openGraph: {
+    title: 'Tienda | Skullframe',
+    description:
+      'Explora y compra productos exclusivos en la tienda de Skullframe. Encuentra arte, accesorios y más.',
+    url: 'https://skullframe.com/store',
+  },
+});
+
 export default async function StorePage() {
   const products = await getProdcuts();
   // const categories = await getCategories();
