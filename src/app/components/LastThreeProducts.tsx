@@ -6,8 +6,8 @@ import { RiArrowRightLongLine } from '@remixicon/react';
 
 export const LastThreeProducts = ({ products }: { products: Product[] }) => {
   return (
-    <section className='container mx-auto px-4 py-20'>
-      <h2 className='text-4xl text-center font-bungee font-bold mb-10'>
+    <section className='container mx-auto px-4 py-16 md:py-20'>
+      <h2 className='text-2xl md:text-4xl text-center font-bungee font-bold mb-10'>
         Productos
       </h2>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>

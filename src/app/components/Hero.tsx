@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 
 export const Hero = () => {
   return (
-    <section className='pt-10 container mx-auto'>
+    <section className='pt-10 container mx-auto px-4'>
       <div className='flex flex-col items-center justify-center gap-12'>
         <motion.div
           animate={{
@@ -26,15 +26,16 @@ export const Hero = () => {
             width={600}
             height={400}
             priority
+            className='w-[300px] md:w-[400px] lg:w-[500px] xl:w-[600px]'
           />
         </motion.div>
 
         <div>
-          <h1 className='text-6xl text-center font-bungee font-bold'>
+          <h1 className='text-4xl md:text-6xl text-center font-bungee font-bold'>
             Skull<span className='text-primary'>Frame</span>
           </h1>
 
-          <p className='text-center text-2xl font-semibold text-black mt-6'>
+          <p className='text-center text-base md:text-2xl font-semibold text-black mt-6'>
             La tienda de drones digitales más grande del Perú.
           </p>
         </div>

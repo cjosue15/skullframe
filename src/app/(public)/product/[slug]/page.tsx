@@ -32,22 +32,22 @@ export default async function ProductPage({
   const product = await getProduct(slug);
 
   return (
-    <section className='mt-20'>
-      <div className='max-w-5xl mx-auto px-4 py-8'>
+    <section className='mt-5 md:mt-20'>
+      <div className='max-w-md md:max-w-5xl mx-auto px-4 py-8'>
         <Link
           href='/store'
           className='font-semibold flex items-center gap-2 mb-6'
         >
           <RiArrowLeftLongLine /> Volver a la tienda
         </Link>
-        <div className='flex items-start gap-8'>
+        <div className='flex flex-col md:flex-row items-center md:items-start gap-8'>
           <div className='flex-shrink-0'>
             <Image
               src={product.imageUrl}
               alt={product.title}
               width={450}
               height={450}
-              className='size-[450px] object-cover rounded-lg'
+              className='size-[300px] md:size-[400px] lg:size-[450px] object-cover rounded-lg'
               priority
             />
           </div>
