@@ -14,7 +14,7 @@ export default async function ProductPage({
 
   return (
     <section className='mt-20'>
-      <div className='container mx-auto px-4 py-8'>
+      <div className='max-w-5xl mx-auto px-4 py-8'>
         <Link
           href='/store'
           className='font-semibold flex items-center gap-2 mb-6'

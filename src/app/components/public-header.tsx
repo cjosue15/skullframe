@@ -5,9 +5,9 @@ export function PublicHeader() {
   return (
     <header
       id='header'
-      className='bg-transparent backdrop-blur-sm text-black p-4 sticky top-0 z-10 h-[60px]'
+      className='bg-transparent backdrop-blur-sm text-black py-4 sticky top-0 z-10 h-[60px]'
     >
-      <div className='container mx-auto'>
+      <div className='container px-4 mx-auto'>
         <div className='flex items-center justify-between'>
           <picture>
             <Image
@@ -15,7 +15,7 @@ export function PublicHeader() {
               alt='Logo'
               width={100}
               height={50}
-              className='h-6'
+              className='h-6 w-auto'
               priority
             />
           </picture>
