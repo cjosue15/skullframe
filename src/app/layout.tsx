@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import '@fontsource/bungee-spice';
@@ -67,8 +67,12 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/manifest.json',
+};
+
+export const viewport: Viewport = {
+  initialScale: 1,
+  maximumScale: 1,
   themeColor: '#ffffff',
-  colorScheme: 'light dark',
 };
 
 export default function RootLayout({
