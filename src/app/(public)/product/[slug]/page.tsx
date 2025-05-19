@@ -1,6 +1,7 @@
 import { getProduct } from '@/app/actions';
 import { ContactButton } from '@/app/components/contact-button';
 import { RiArrowLeftLongLine } from '@remixicon/react';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -8,7 +9,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
 
@@ -19,6 +20,9 @@ export async function generateMetadata({
       title: product.title,
       description: product.description,
       images: [product.imageUrl],
+    },
+    alternates: {
+      canonical: `https://skullframe.com/product/${slug}`,
     },
   };
 }

@@ -1,7 +1,8 @@
 import { ProductCard } from '@/app/components/ProductCard';
 import { getCategories, getProdcuts } from '@/app/lib/querys';
+import { Metadata } from 'next';
 
-export const generateMetadata = () => ({
+export const generateMetadata = (): Metadata => ({
   title: 'Tienda | Skullframe',
   description:
     'Explora y compra productos exclusivos en la tienda de Skullframe. Encuentra arte, accesorios y más.',
@@ -10,6 +11,9 @@ export const generateMetadata = () => ({
     description:
       'Explora y compra productos exclusivos en la tienda de Skullframe. Encuentra arte, accesorios y más.',
     url: 'https://skullframe.com/store',
+  },
+  alternates: {
+    canonical: 'https://skullframe.com/store',
   },
 });
 

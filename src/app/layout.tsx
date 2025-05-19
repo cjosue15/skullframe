@@ -67,6 +67,10 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/manifest.json',
+  category: 'robotics',
+  alternates: {
+    canonical: 'https://skullframe.com',
+  },
 };
 
 export const viewport: Viewport = {
