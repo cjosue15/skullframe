@@ -4,6 +4,7 @@ import { RiArrowLeftLongLine } from '@remixicon/react';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata({
   params,
@@ -12,6 +13,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
+
+  if (!product) {
+    notFound();
+  }
 
   return {
     title: product.title,
@@ -34,6 +39,10 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const product = await getProduct(slug);
+
+  if (!product) {
+    notFound();
+  }
 
   return (
     <section className='mt-5 md:mt-20'>
