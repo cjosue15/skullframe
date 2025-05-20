@@ -24,7 +24,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.title}
           </h3>
           <p className='text-gray-600 mt-2 text-pretty line-clamp-3'>
-            {product.description}
+            {product.shortDescription}
           </p>
         </div>
 

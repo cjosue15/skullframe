@@ -2,6 +2,7 @@
 
 import { FileUpload } from '@/app/components/file-upload';
 import { FormError } from '@/app/components/FormError';
+import { RichTextEditor } from '@/app/components/rich-editor';
 import { Category } from '@/app/dtos/categories.dtos';
 import {
   Product,
@@ -93,6 +94,7 @@ export function FormProduct({
       setValue('type', product.type);
       setValue('price', product.price);
       setValue('slug', product.slug);
+      setValue('shortDescription', product.shortDescription);
       setImagePreview(product.imageUrl);
     }
   }, [product, setValue]);
@@ -246,18 +248,18 @@ export function FormProduct({
           </div>
 
           <div className='space-y-2'>
-            <Label htmlFor='description' className='font-bold mb-2 block'>
-              Descripción
+            <Label htmlFor='shortDescription' className='font-bold mb-2 block'>
+              Breve Descripción
             </Label>
             <Textarea
-              id='description'
+              id='shortDescription'
               disabled={isLoading}
               placeholder='Ingrese la descripción del producto'
-              {...register('description')}
+              {...register('shortDescription')}
               className='min-h-[90px]'
             />
-            {errors.description && (
-              <FormError name={errors.description.message!} />
+            {errors.shortDescription && (
+              <FormError name={errors.shortDescription.message!} />
             )}
           </div>
 
@@ -345,6 +347,15 @@ export function FormProduct({
             )}
           </div>
         </div>
+      </div>
+
+      <div className='space-y-2'>
+        <Label className='font-bold mb-2 block'>Descripción</Label>
+        <RichTextEditor
+          value={watch('description')}
+          onChange={(val) => setValue('description', val)}
+          disabled={isLoading}
+        />
       </div>
 
       <div className='text-right mt-6'>

@@ -25,6 +25,7 @@ export const getProduct = async (slug: string) => {
       .select({
         id: productsTable.id,
         title: productsTable.title,
+        shortDescription: productsTable.shortDescription,
         description: productsTable.description,
         price: productsTable.price,
         imageUrl: productsTable.imageUrl,

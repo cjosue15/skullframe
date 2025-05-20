@@ -122,6 +122,7 @@ export async function createProduct({
   imageUrl,
   fileUrl,
   slug,
+  shortDescription,
 }: Product) {
   try {
     await checkUser();
@@ -136,6 +137,7 @@ export async function createProduct({
         imageUrl,
         fileUrl,
         slug,
+        shortDescription,
       })
       .returning();
     revalidatePath('/admin/products');
@@ -157,6 +159,7 @@ export async function updateProduct({
   imageUrl,
   fileUrl,
   slug,
+  shortDescription,
 }: Product) {
   try {
     await checkUser();
@@ -171,6 +174,7 @@ export async function updateProduct({
         imageUrl,
         fileUrl,
         slug,
+        shortDescription,
         updatedAt: new Date(),
       })
       .where(eq(productsTable.id, id!))
