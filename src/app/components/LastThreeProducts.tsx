@@ -14,6 +14,13 @@ export const LastThreeProducts = ({ products }: { products: Product[] }) => {
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
+        {products.length === 0 && (
+          <div className='col-span-1 md:col-span-2 lg:col-span-3 text-center'>
+            <p className='text-lg text-gray-600'>
+              No hay productos disponibles
+            </p>
+          </div>
+        )}
       </div>
       <div className='flex justify-center mt-10'>
         <Button asChild>

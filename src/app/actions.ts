@@ -10,8 +10,8 @@ export async function getLastThreeProducts() {
     const products = (await db
       .select()
       .from(productsTable)
-      .orderBy(desc(productsTable.id))
-      .limit(3)) as Product[];
+      .limit(3)
+      .orderBy(desc(productsTable.createdAt))) as Product[];
 
     return products;
   } catch (error) {

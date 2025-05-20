@@ -73,6 +73,13 @@ export default async function StorePage() {
                 }}
               />
             ))}
+            {products.length === 0 && (
+              <div className='col-span-1 sm:col-span-2 lg:col-span-3 text-center'>
+                <p className='text-lg text-gray-600'>
+                  No hay productos disponibles
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
