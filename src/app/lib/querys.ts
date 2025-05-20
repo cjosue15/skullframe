@@ -1,6 +1,6 @@
 import { db } from '@/db/index';
 import { categoriesTable, productsTable } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { Category } from '../dtos/categories.dtos';
 import { ProductWithCategory } from '../dtos/products.dtos';
 
@@ -33,7 +33,8 @@ export async function getProdcuts() {
       .innerJoin(
         categoriesTable,
         eq(categoriesTable.id, productsTable.categoryId)
-      );
+      )
+      .orderBy(desc(productsTable.createdAt));
     return data as ProductWithCategory[];
   } catch (error) {
     throw new Error('Error fetching products');
