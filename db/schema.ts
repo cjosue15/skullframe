@@ -1,8 +1,15 @@
+import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 
 export const categoriesTable = sqliteTable('categories', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
+  // updatedAt: integer('updated_at', { mode: 'timestamp' })
+  //   .notNull()
+  //   .default(sql`(unixepoch())`),
+  // createdAt: integer('created_at', { mode: 'timestamp' })
+  //   .notNull()
+  //   .default(sql`(unixepoch())`),
 });
 
 export const productsTable = sqliteTable('products', {
@@ -19,8 +26,8 @@ export const productsTable = sqliteTable('products', {
   slug: text('slug').notNull().unique(),
   updatedAt: integer('updated_at', { mode: 'timestamp' })
     .notNull()
-    .default(new Date()),
+    .default(sql`(unixepoch())`),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
-    .default(new Date()),
+    .default(sql`(unixepoch())`),
 });
