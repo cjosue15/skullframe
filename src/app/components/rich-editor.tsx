@@ -18,8 +18,8 @@ import {
 import { Toggle } from '@/components/Toggle';
 import { Button } from '@/components/Button';
 import Underline from '@tiptap/extension-underline';
-import Link from '@tiptap/extension-link';
-import Image from '@tiptap/extension-image';
+// import Link from '@tiptap/extension-link';
+// import Image from '@tiptap/extension-image';
 
 interface RichTextEditorProps {
   value: string;
@@ -40,17 +40,17 @@ export function RichTextEditor({
     extensions: [
       StarterKit,
       Underline,
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-primary underline cursor-pointer',
-        },
-      }),
-      Image.configure({
-        HTMLAttributes: {
-          class: 'rounded-md max-w-full mx-auto my-4',
-        },
-      }),
+      // Link.configure({
+      //   openOnClick: false,
+      //   HTMLAttributes: {
+      //     class: 'text-primary underline cursor-pointer',
+      //   },
+      // }),
+      // Image.configure({
+      //   HTMLAttributes: {
+      //     class: 'rounded-md max-w-full mx-auto my-4',
+      //   },
+      // }),
     ],
     content: value,
     editable: !disabled,
@@ -73,27 +73,27 @@ export function RichTextEditor({
   }, []);
 
   // Handle link insertion
-  const handleLinkInsert = () => {
-    if (linkUrl && editor) {
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange('link')
-        .setLink({ href: linkUrl })
-        .run();
+  // const handleLinkInsert = () => {
+  //   if (linkUrl && editor) {
+  //     editor
+  //       .chain()
+  //       .focus()
+  //       .extendMarkRange('link')
+  //       .setLink({ href: linkUrl })
+  //       .run();
 
-      setLinkUrl('');
-      setShowLinkInput(false);
-    }
-  };
+  //     setLinkUrl('');
+  //     setShowLinkInput(false);
+  //   }
+  // };
 
   // Handle image insertion
-  const handleImageInsert = () => {
-    const url = prompt('Enter image URL');
-    if (url && editor) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
-  };
+  // const handleImageInsert = () => {
+  //   const url = prompt('Enter image URL');
+  //   if (url && editor) {
+  //     editor.chain().focus().setImage({ src: url }).run();
+  //   }
+  // };
 
   if (!mounted) {
     return (
@@ -174,7 +174,7 @@ export function RichTextEditor({
           <RiListOrdered className='h-4 w-4' />
         </Toggle>
         <div className='w-px h-6 bg-border mx-1' />
-        <div className='relative'>
+        {/* <div className='relative'>
           <Toggle
             pressed={editor.isActive('link')}
             onPressedChange={() => {
@@ -208,7 +208,7 @@ export function RichTextEditor({
         </div>
         <Toggle onPressedChange={handleImageInsert} aria-label='Image'>
           <RiImageLine className='h-4 w-4' />
-        </Toggle>
+        </Toggle> */}
       </div>
       <EditorContent
         id='editor'
