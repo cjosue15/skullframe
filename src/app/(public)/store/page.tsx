@@ -68,6 +68,7 @@ export default async function StorePage() {
                   fileUrl: product.fileUrl,
                   slug: product.slug,
                   type: product.type,
+                  shortDescription: product.shortDescription,
                   updatedAt: product.updatedAt,
                   createdAt: product.createdAt,
                 }}

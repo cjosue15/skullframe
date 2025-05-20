@@ -28,6 +28,7 @@ export async function getProdcuts() {
         slug: productsTable.slug,
         type: productsTable.type,
         updatedAt: productsTable.updatedAt,
+        shortDescription: productsTable.shortDescription,
       })
       .from(productsTable)
       .innerJoin(

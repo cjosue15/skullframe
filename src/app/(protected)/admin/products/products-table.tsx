@@ -35,7 +35,7 @@ export function ProductsTable({
             <TableRow key={item.id}>
               <TableCell>{item.title}</TableCell>
               <TableCell className='max-w-[200px] overflow-hidden text-ellipsis'>
-                {item.description}
+                {item.shortDescription}
               </TableCell>
               <TableCell className='text-right'>S/ {item.price}</TableCell>
               <TableCell>

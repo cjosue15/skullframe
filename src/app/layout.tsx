@@ -1,15 +1,15 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Roboto, Roboto_Mono } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import '@fontsource/bungee-spice';
 import './globals.css';
 
-const geistSans = Geist({
+const robotoSans = Roboto({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 });
 
-const geistMono = Geist_Mono({
+const robotoMono = Roboto_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
@@ -88,7 +88,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang='es' className='antialiased'>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${robotoSans.variable} ${robotoMono.variable} antialiased`}
         >
           {children}
 

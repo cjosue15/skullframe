@@ -4,6 +4,7 @@ export const productSchema = z
   .object({
     id: z.number().optional(), // opcional si se autogenera
     title: z.string().min(1, 'El título es requerido'),
+    shortDescription: z.string().min(1, 'La descripción corta es requerida'),
     description: z.string().min(1, 'La descripción es requerida'),
     price: z
       .number({ coerce: true })
@@ -51,6 +52,7 @@ export interface Product {
   id?: number;
   title: string;
   description: string;
+  shortDescription: string;
   price: number;
   imageUrl: string;
   categoryId: number;

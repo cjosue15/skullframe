@@ -1,6 +1,8 @@
 'use client';
 
+import { FileUpload } from '@/app/components/file-upload';
 import { FormError } from '@/app/components/FormError';
+import { RichTextEditor } from '@/app/components/rich-editor';
 import { Category } from '@/app/dtos/categories.dtos';
 import {
   Product,
@@ -23,14 +25,12 @@ import { Textarea } from '@/components/Textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   RiArrowLeftLongLine,
-  RiImageLine,
   RiLoader2Line,
   RiUploadCloudFill,
 } from '@remixicon/react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
@@ -57,6 +57,7 @@ export function FormProduct({
     watch,
   } = useForm({
     resolver: zodResolver(productSchema),
+    mode: 'onChange',
     defaultValues: {
       title: '',
       description: '',
@@ -73,7 +74,6 @@ export function FormProduct({
   const [imagePreview, setImagePreview] = useState<string | undefined>(
     undefined
   );
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -94,6 +94,7 @@ export function FormProduct({
       setValue('type', product.type);
       setValue('price', product.price);
       setValue('slug', product.slug);
+      setValue('shortDescription', product.shortDescription);
       setImagePreview(product.imageUrl);
     }
   }, [product, setValue]);
@@ -247,18 +248,18 @@ export function FormProduct({
           </div>
 
           <div className='space-y-2'>
-            <Label htmlFor='description' className='font-bold mb-2 block'>
-              Descripción
+            <Label htmlFor='shortDescription' className='font-bold mb-2 block'>
+              Breve Descripción
             </Label>
             <Textarea
-              id='description'
+              id='shortDescription'
               disabled={isLoading}
               placeholder='Ingrese la descripción del producto'
-              {...register('description')}
+              {...register('shortDescription')}
               className='min-h-[90px]'
             />
-            {errors.description && (
-              <FormError name={errors.description.message!} />
+            {errors.shortDescription && (
+              <FormError name={errors.shortDescription.message!} />
             )}
           </div>
 
@@ -325,72 +326,36 @@ export function FormProduct({
             <Label htmlFor='image' className='font-bold mb-2 block'>
               Imagen del Producto
             </Label>
-            <div className='grid gap-4'>
-              <div
-                className={`border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors h-full min-h-[280px] ${
-                  isLoading
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:border-primary'
-                }`}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {imagePreview ? (
-                  <div className='relative w-full h-full min-h-[240px]'>
-                    <Image
-                      src={
-                        imagePreview?.startsWith('data:')
-                          ? imagePreview
-                          : `${imagePreview}?v=${
-                              product?.updatedAt?.getTime() ?? Date.now()
-                            }`
-                      }
-                      alt='Product preview'
-                      fill
-                      className='object-contain rounded-md'
-                    />
-                  </div>
-                ) : (
-                  <div className='flex flex-col items-center justify-center py-8 text-muted-foreground'>
-                    <RiImageLine className='h-12 w-12 mb-2' />
-                    <p className='text-sm font-medium'>
-                      Click para subir una imagen
-                    </p>
-                    <p className='text-xs'>JPG, PNG o WEBP (max. 1MB)</p>
-                  </div>
-                )}
-                <input
-                  ref={fileInputRef}
-                  type='file'
-                  id='image'
-                  accept='image/jpeg,image/png,image/webp'
-                  className='hidden'
-                  onChange={handleImageChange}
-                  disabled={isLoading}
-                />
-              </div>
-              {errors.imageFile && (
-                <FormError name={errors.imageFile.message as string} />
-              )}
-              {imagePreview && (
-                <Button
-                  type='button'
-                  variant='secondary'
-                  onClick={() => {
-                    setImagePreview(undefined);
-                    setValue('imageFile', undefined as unknown as File);
-                    setError('imageFile', {
-                      type: 'manual',
-                      message: 'La imagen es obligatoria',
-                    });
-                    if (fileInputRef.current) fileInputRef.current.value = '';
-                  }}
-                >
-                  Remove Image
-                </Button>
-              )}
-            </div>
+
+            <FileUpload
+              imagePreview={imagePreview}
+              isLoading={isLoading}
+              onImageChange={handleImageChange}
+              onRemoveImage={() => {
+                setImagePreview(undefined);
+                setValue('imageFile', undefined as unknown as File);
+                setError('imageFile', {
+                  type: 'manual',
+                  message: 'La imagen es obligatoria',
+                });
+              }}
+              updatedAt={product?.updatedAt}
+              errorMessage={errors.imageFile?.message as string}
+            />
+            {errors.imageFile && (
+              <FormError name={errors.imageFile.message as string} />
+            )}
           </div>
         </div>
+      </div>
+
+      <div className='space-y-2'>
+        <Label className='font-bold mb-2 block'>Descripción</Label>
+        <RichTextEditor
+          value={watch('description')}
+          onChange={(val) => setValue('description', val)}
+          disabled={isLoading}
+        />
       </div>
 
       <div className='text-right mt-6'>

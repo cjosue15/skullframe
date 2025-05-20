@@ -23,7 +23,7 @@ export async function generateMetadata({
     description: product.description,
     openGraph: {
       title: product.title,
-      description: product.description,
+      description: product.shortDescription,
       images: [product.imageUrl],
     },
     alternates: {
@@ -70,7 +70,12 @@ export default async function ProductPage({
               S/ {product.price.toFixed(2)}
             </p>
             <p className='mt-4 text-base font-bold'>Descripción :</p>
-            <p className='mt-1 text-base'>{product.description}</p>
+            <p className='mt-1 text-base'>{product.shortDescription}</p>
+
+            <div
+              className='prose leading-4 text-black'
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
 
             <p className='mt-4 text-base font-bold'>Categoría :</p>
             <p className='mt-1 text-base'>{product.categoryName}</p>
