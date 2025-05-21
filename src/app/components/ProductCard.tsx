@@ -19,7 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
           />
         </picture>
 
-        <div className='flex-1'>
+        <div className='flex-1 w-full'>
           <h3 className='text-xl font-semibold text-left line-clamp-1'>
             {product.title}
           </h3>
