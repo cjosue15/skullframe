@@ -45,7 +45,7 @@ export default async function ProductPage({
   }
 
   return (
-    <section className='mt-5 md:mt-20'>
+    <section className='my-5 md:my-10'>
       <div className='max-w-md md:max-w-5xl mx-auto px-4 py-8'>
         <Link
           href='/store'
@@ -64,7 +64,7 @@ export default async function ProductPage({
               priority
             />
           </div>
-          <div>
+          <div className='flex-1'>
             <h1 className='text-3xl font-extrabold'>{product.title}</h1>
             <p className='mt-4 text-3xl font-semibold'>
               S/ {product.price.toFixed(2)}
