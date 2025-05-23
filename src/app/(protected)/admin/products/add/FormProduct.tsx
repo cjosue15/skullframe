@@ -77,12 +77,6 @@ export function FormProduct({
   const router = useRouter();
 
   useEffect(() => {
-    const title = watch('title');
-    const slug = slugify(title || '');
-    setValue('slug', slug);
-  }, [watch('title'), setValue]);
-
-  useEffect(() => {
     setValue('imagePreview', imagePreview);
   }, [imagePreview, setValue]);
 
@@ -174,7 +168,7 @@ export function FormProduct({
         const { url: imageUrl, slug: usedSlug } = await handleFileR2(
           values.imageFile,
           values.slug,
-          product && oldSlug === newSlug ? oldSlug : undefined // <-- aquí
+          product && oldSlug === newSlug ? oldSlug : undefined
         );
         url = imageUrl;
         newSlug = usedSlug; // Si el slug cambió, borra la imagen anterior
@@ -193,6 +187,7 @@ export function FormProduct({
           id: product.id,
           imageUrl: url,
           slug: newSlug,
+          needsChangeSlug: oldSlug !== newSlug,
         });
         toast.success('Producto actualizado con éxito');
       } else {
@@ -238,7 +233,12 @@ export function FormProduct({
               id='title'
               disabled={isLoading}
               placeholder='Ingrese el título del producto'
-              {...register('title')}
+              {...register('title', {
+                onChange: (e) => {
+                  setValue('title', e.target.value);
+                  setValue('slug', slugify(e.target.value));
+                },
+              })}
             />
             {errors.title && <FormError name={errors.title.message!} />}
 
@@ -342,9 +342,6 @@ export function FormProduct({
               updatedAt={product?.updatedAt}
               errorMessage={errors.imageFile?.message as string}
             />
-            {errors.imageFile && (
-              <FormError name={errors.imageFile.message as string} />
-            )}
           </div>
         </div>
       </div>

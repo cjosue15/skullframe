@@ -15,7 +15,7 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Skullframe | Arte y productos exclusivos',
+  title: 'Skullframe | Arte y productos de electronica y entretenimiento',
   description:
     'Descubre arte, accesorios y productos únicos en Skullframe. Compra y explora nuestra colección exclusiva.',
   keywords: [

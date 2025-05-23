@@ -160,9 +160,11 @@ export async function updateProduct({
   fileUrl,
   slug,
   shortDescription,
-}: Product) {
+  needsChangeSlug,
+}: Product & { needsChangeSlug?: boolean }) {
   try {
     await checkUser();
+
     await db
       .update(productsTable)
       .set({
@@ -173,9 +175,9 @@ export async function updateProduct({
         price,
         imageUrl,
         fileUrl,
-        slug,
         shortDescription,
         updatedAt: new Date(),
+        ...(needsChangeSlug ? { slug } : {}),
       })
       .where(eq(productsTable.id, id!))
       .returning();
