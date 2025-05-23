@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'pub-bef3afca1bc141e2af506d99b78f265d.r2.dev',
+        hostname: 'media.skullframe.com',
       },
     ],
   },
