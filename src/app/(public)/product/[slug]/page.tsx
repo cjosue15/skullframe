@@ -73,7 +73,7 @@ export default async function ProductPage({
             <p className='mt-1 text-base'>{product.shortDescription}</p>
 
             <div
-              className='prose leading-4 text-black'
+              className='prose leading-4 text-black mt-4'
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
 
